@@ -36,4 +36,4 @@ A clean and intuitive Todo application that allows users to add, track, and mana
 
   This project is deployed on GitHub Pages:
 
-  - https://github.com/lizmary0209/se_project_todo-app.git
+  - https://lizmary0209.github.io/se_project_todo-app/
