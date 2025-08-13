@@ -2,7 +2,11 @@ class Todo {
   constructor(todoData, selector) {
     this._todoData = todoData;
     this._templateElement = document.querySelector(selector);
-    this._dueDate = new Date(this._todoData.date);
+    if (this._todoData.date) {
+      this._dueDate = new Date(this._todoData.date);
+    } else {
+      this._dueDate = null;
+    }
   }
 
   _formatDueDate() {
