@@ -6,7 +6,6 @@ class FormValidator {
     this._inputErrorClass = settings.inputErrorClass;
     this._inactiveButtonClass = settings.inactiveButtonClass;
     this._formEl = formEl;
-    this._settings = settings;
   }
 
   _showInputError(inputEl, errorMessage) {
