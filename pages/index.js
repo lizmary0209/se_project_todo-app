@@ -3,50 +3,27 @@ import { initialTodos, validationConfig } from "../utils/constants.js";
 import Section from "../components/Section.js";
 import FormValidator from "../components/FormValidator.js";
 import PopupWithForm from "../components/PopupWithForm.js";
+import TodoCounter from "../components/TodoCounter.js";
+import Todo from "../components/Todo.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const addTodoButton = document.querySelector(".button_action_add");
   const addTodoForm = document.forms["add-todo-form"];
   const addTodoPopupSelector = "#add-todo-popup";
 
-  class TodoGenerator {
-    constructor(data) {
-      this._data = data;
-      this._template = document.querySelector("#todo-template").content;
-    }
-
-    getTodoElement() {
-      const todoElement = this._template.querySelector(".todo").cloneNode(true);
-      todoElement.querySelector(".todo__name").textContent =
-        this._data.name || "";
-      todoElement.querySelector(".todo__date").textContent = this._data.date
-        ? new Date(this._data.date).toLocaleDateString()
-        : "";
-
-      const checkbox = todoElement.querySelector(".todo__completed");
-      const label = todoElement.querySelector(".todo__label");
-      const uniqueId = `todo-${this._data.id}`;
-      checkbox.id = uniqueId;
-      checkbox.name = "completed";
-      label.setAttribute("for", uniqueId);
-      checkbox.checked = !!this._data.completed;
-
-      checkbox.addEventListener("change", () => {
-        this._data.completed = checkbox.checked;
-      });
-
-      const deleteBtn = todoElement.querySelector(".todo__delete-btn");
-      deleteBtn.addEventListener("click", () => {
-        todoElement.remove();
-      });
-
-      return todoElement;
-    }
-  }
+  const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
   const generateTodo = (data) => {
-    const todo = new TodoGenerator(data);
-    return todo.getTodoElement();
+    const todo = new Todo(
+      data,
+      "#todo-template",
+      (checked) => todoCounter.updateCompleted(checked),
+      (wasCompleted) => {
+        todoCounter.updateTotal(false);
+        if (wasCompleted) todoCounter.updateCompleted(false);
+      }
+    );
+    return todo.getView();
   };
 
   const section = new Section({
@@ -71,9 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
         id: uuidv4(),
       };
       section.addItem(generateTodo(values));
+      todoCounter.updateTotal(true);
       newTodoValidator.resetValidation();
     },
   });
+
+  addTodoPopup.setEventListeners();
 
   addTodoButton.addEventListener("click", () => {
     addTodoPopup.open();
